@@ -4,18 +4,30 @@ import classes.*;
 import interfaces.*;
 
 public class ServiceInitializare {
+    //early initialization
+    private static final Service instance = new Service();
     public List<Autor> autori = new ArrayList<>();
     List<Sectiune> sectiuni = new ArrayList<>();
     public List<Carte> getCarti() {
         return carti;
     }
     public List<Carte> carti = new ArrayList<>();
-
     List<Cititor> cititori = new ArrayList<>();
     List<Bibliotecar> bibliotecari = new ArrayList<>();
     List<Imprumut> imprumuturi = new ArrayList<>();
 
 
+    //lazy
+    public static Service getInstance() {
+       /* if (instance == null) {
+            synchronized (Service.class) {
+                if (instance == null) {
+                    instance = new Service();
+                }
+            }
+        }*/
+        return instance;
+    }
 
     public void initSect() {
         sectiuni.add(new Sectiune(1, "Beletristica"));

@@ -1,12 +1,14 @@
-import classes.Autor;
-import classes.Carte;
-import classes.Sectiune;
-import interfaces.iCarte;
 
+import classes.*;
+import interfaces.*;
+
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) {
+
         Service unu = Service.getInstance();
         //initializare valori
         unu.initSect();
@@ -57,6 +59,7 @@ public class Main {
         unu.getReaderWithLongestDelay();
         System.out.println();
 
+        AuditService.inchideAudit();
 
 
 

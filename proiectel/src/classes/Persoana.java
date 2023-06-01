@@ -3,9 +3,9 @@ package classes;
 import interfaces.iPersoana;
 
 public class Persoana implements iPersoana {
-    private Integer id;
-    private String nume;
-    private String prenume;
+    protected Integer id;
+    protected String nume;
+    protected String prenume;
 
     public Persoana(Integer id, String nume, String prenume) {
         this.nume = nume;

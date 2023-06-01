@@ -1,7 +1,6 @@
 import classes.*;
-import interfaces.iAutor;
-import interfaces.iCarte;
-import interfaces.iCititor;
+import interfaces.*;
+
 import org.jetbrains.annotations.NotNull;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -10,8 +9,9 @@ import java.util.*;
 
 public class Service extends ServiceInitializare{
 
-    private static Service instance;
     public List<Autor> cautareAutoriDinSectiune(@NotNull List<Carte> carti, Sectiune sectiune) {
+        AuditService.inregistrareActiune("cautare autori din sectiune");
+
         List<Autor> autori = new ArrayList<>();
 
         for (Carte Carte : carti) {
@@ -33,7 +33,7 @@ public class Service extends ServiceInitializare{
 
         return autori;
     }
-    public static Service getInstance() {
+/*    public static Service getInstance() {
         if (instance == null) {
             synchronized (Service.class) {
                 if (instance == null) {
@@ -42,7 +42,7 @@ public class Service extends ServiceInitializare{
             }
         }
         return instance;
-    }
+    }*/
     private double calculateAverageRating(@NotNull iCarte iCarte) {
         int numarRatinguri = iCarte.getRatings().size();
         double sumaRatinguri = 0.0;
@@ -56,6 +56,8 @@ public class Service extends ServiceInitializare{
         }
     }
     public List<iCarte> getTopRatedBooks(int count) {
+        AuditService.inregistrareActiune("cartile cu cele mai mari ratinguri");
+
         List<iCarte> topRatedBooks = new ArrayList<>(carti);
         topRatedBooks.sort(Comparator.comparingDouble(this::calculateAverageRating).reversed());
         if (count < topRatedBooks.size()) {
@@ -77,6 +79,8 @@ public class Service extends ServiceInitializare{
     }
 
     public List<iCarte> searchBooksByTitle(String title) {
+        AuditService.inregistrareActiune("cartile care se potrivesc cu titlul");
+
         List<iCarte> matchingBooks = new ArrayList<>();
         for (iCarte carte : carti) {
             if (carte.getTitlu().toLowerCase().contains(title.toLowerCase())) {
@@ -98,12 +102,16 @@ public class Service extends ServiceInitializare{
     }
 
     public void addRating(@NotNull iCarte c, double nota, String mesaj) {
+        AuditService.inregistrareActiune("rating adaugat pentru carte");
+
         Rating r = new Rating(nota, mesaj);
         c.addRating(r);
         System.out.println("Rating adaugat pentru cartea " + c.getTitlu());
 
     }
     public void addRating(@NotNull Autor a, double nota, String mesaj) {
+        AuditService.inregistrareActiune("rating adaugat pentru autor");
+
         Rating r = new Rating(nota, mesaj);
         a.addRating(r);
         System.out.println("Rating adaugat pentru autorul " + a.getNume() + " "+ a.getPrenume());
@@ -124,6 +132,8 @@ public class Service extends ServiceInitializare{
     }
 
     public Map<iCititor, String> istoricCarte(iCarte iCarte) {
+        AuditService.inregistrareActiune("istoric imprumuturi ptr carte");
+
         Map<iCititor, String> istoric = new HashMap<>();
         System.out.println("Cartea data ca parametru a mai fost imprumutata de: ");
         for (Imprumut iImprumut: imprumuturi) {
@@ -137,6 +147,8 @@ public class Service extends ServiceInitializare{
     }
 
     public void mediaRating(@NotNull iCarte iCarte) {
+        AuditService.inregistrareActiune("calculare media ratingurilor ptr carte");
+
         int numarRatinguri = iCarte.getRatings().size();
         double sumaRatinguri = 0.0;
         for (Rating rating : iCarte.getRatings()) {
@@ -149,6 +161,8 @@ public class Service extends ServiceInitializare{
         System.out.println(iCarte.getTitlu() + " are media ratingurilor" + sol);
     }
     public double mediaRating(@NotNull Autor carte) {
+        AuditService.inregistrareActiune("calculare media ratingurilor ptr autor");
+
         int numarRatinguri = carte.getRatings().size();
         double sumaRatinguri = 0.0;
         for (Rating rating : carte.getRatings()) {
@@ -162,6 +176,8 @@ public class Service extends ServiceInitializare{
     }
 
     public boolean hasAuthorBooksWithHigherRating(Autor autor, double rat) {
+        AuditService.inregistrareActiune("autorul are sau nu carti cu rating mai mare");
+
         for (Carte carte : carti) {
             if (carte.getAutor().equals(autor)) {
                 for (Rating rating : carte.getRatings()) {
@@ -178,6 +194,8 @@ public class Service extends ServiceInitializare{
     }
 
     public List<iCarte> sortBooksByRating() {
+        AuditService.inregistrareActiune("sorteaza cartile dupa rating");
+
         List<iCarte> sortedBooks = new ArrayList<>(carti);
         sortedBooks.sort(Comparator.comparingDouble(this::calculateAverageRating).reversed());
         System.out.println("Lista de carti a bibliotecii a fost sortata in functie de rating.");
@@ -185,6 +203,8 @@ public class Service extends ServiceInitializare{
     }
 
     public Autor getMostPopularAuthor() {
+        AuditService.inregistrareActiune("cel mai iimprumutat autor");
+
         Map<Autor, Integer> authorBorrowCount = new HashMap<>();
         for (Imprumut imprumut : imprumuturi) {
             Autor author = imprumut.getCarte().getAutor();
@@ -196,6 +216,8 @@ public class Service extends ServiceInitializare{
     }
 
     public Cititor getReaderWithLongestDelay() {
+        AuditService.inregistrareActiune("cititorul cu cea mai mare intarziere");
+
         Cititor reader = null;
         long longestDelay = 0;
 
